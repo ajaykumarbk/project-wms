@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: wms-route
+  namespace: wms
+spec:
+  parentRefs:
+    - name: wms-gateway
+  hostnames:
+    - app.datanetwork.online
+  rules:
+    # 🔹 API traffic → Backend
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: backend
+          port: 80
+
+    # 🔹 Everything else → Frontend
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: frontend
+          port: 80
