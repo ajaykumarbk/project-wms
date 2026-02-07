@@ -87,7 +87,7 @@ jobs:
           push: true
           tags: |
             ajaykumara/frontend-wms-app:${{ github.run_number }}
-            ajaykumara/frontend-app:${{ steps.vars.outputs.sha_short }}
+            ajaykumara/frontend-wms-app:${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
