@@ -7,8 +7,10 @@ spec:
   parentRefs:
     - name: wms-gateway
       namespace: wms
+      sectionName: https
+  hostnames:
+    - "app.datanetwork.online"
   rules:
-    # 🔹 Health check → Backend
     - matches:
         - path:
             type: Exact
@@ -16,8 +18,6 @@ spec:
       backendRefs:
         - name: backend
           port: 80
-
-    # 🔹 API traffic → Backend
     - matches:
         - path:
             type: PathPrefix
@@ -25,8 +25,6 @@ spec:
       backendRefs:
         - name: backend
           port: 80
-
-    # 🔹 Uploads → Backend
     - matches:
         - path:
             type: PathPrefix
@@ -34,8 +32,6 @@ spec:
       backendRefs:
         - name: backend
           port: 80
-
-    # 🔹 Everything else → Frontend
     - matches:
         - path:
             type: PathPrefix

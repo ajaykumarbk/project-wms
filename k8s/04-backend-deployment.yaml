@@ -1,5 +1,3 @@
-# value: http://136.115.177.14
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,23 +15,19 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ajaykumara/backend-wms-app:9981131
+          image: ajaykumara/backend-wms-app:3b34d72
           imagePullPolicy: Always
           ports:
-            - containerPort:  5000
-
+            - containerPort: 5000
           envFrom:
             - secretRef:
                 name: backend-secrets
-
           env:
             - name: PUBLIC_API_URL
-              value: http://136.115.177.14
-
+              value: https://app.datanetwork.online
           volumeMounts:
             - name: uploads
               mountPath: /app/uploads
-
       volumes:
         - name: uploads
           persistentVolumeClaim:

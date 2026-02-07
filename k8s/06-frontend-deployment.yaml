@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ajaykumara/frontend-app:73
+          image: ajaykumara/frontend-wms-app:3b34d72
           imagePullPolicy: Always
           ports:
             - containerPort: 80
