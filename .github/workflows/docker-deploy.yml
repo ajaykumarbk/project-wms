@@ -2,7 +2,7 @@ name: Build & Push Docker Images
 
 on:
   push:
-    branches: [ develop, test, https-implement, main ]        # Triggers on push to develop
+    branches: [ develop, test,main ]        # Triggers on push to develop
   workflow_dispatch:             # Manual trigger
 
 jobs:
@@ -35,8 +35,8 @@ jobs:
           curl -s -o /dev/null -w "%{http_code}" \
             -u "${{ secrets.SONAR_TOKEN }}:" \
             -X POST "${{ secrets.SONAR_HOST_URL }}/api/projects/create" \
-            -d "project=wms" \
-            -d "name=wms" \
+            -d "project=project-wms" \
+            -d "name=project-wms" \
           || echo "Ignoring SonarQube creation error"
         continue-on-error: true
 
@@ -63,7 +63,12 @@ jobs:
 
       # --- END OF SONARQUBE STEPS ---
 
-      # 2. Login to Docker Hub
+      # 2. Login to Docker Hub and set short SHA output
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -81,8 +86,8 @@ jobs:
           context: ./frontend
           push: true
           tags: |
-            ajaykumara/frontend-app:${{ github.run_number }}
-            ajaykumara/frontend-app:GKE-v.001
+            ajaykumara/frontend-wms-app:${{ github.run_number }}
+            ajaykumara/frontend-app:${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -93,8 +98,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ajaykumara/backend-app:${{ github.run_number }}
-            ajaykumara/backend-app:GKE-v.001
+            ajaykumara/backend-wms-app:${{ github.run_number }}
+            ajaykumara/backend-wms-app:${{ steps.vars.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -102,5 +107,5 @@ jobs:
       - name: Done
         run: |
           echo "Frontend & Backend images pushed successfully!"
-          echo "Frontend: ajaykumara/frontend-app:latest"
-          echo "Backend:  ajaykumara/backend-app:latest"
+          echo "Frontend: ajaykumara/frontend-wms-app:latest"
+          echo "Backend:  ajaykumara/backend-wms-app:latest"
