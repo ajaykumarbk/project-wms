@@ -1,0 +1,40 @@
+# value: http://136.115.177.14
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: wms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ajaykumara/backend-app:73
+          imagePullPolicy: Always
+          ports:
+            - containerPort:  5000
+
+          envFrom:
+            - secretRef:
+                name: backend-secrets
+
+          env:
+            - name: PUBLIC_API_URL
+              value: http://136.115.177.14
+
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: backend-uploads-pvc
