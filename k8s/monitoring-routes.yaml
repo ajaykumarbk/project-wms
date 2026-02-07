@@ -3,11 +3,11 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: grafana-route
-  namespace: monitoring # 🔹 Correct namespace
+  namespace: monitoring 
 spec:
   parentRefs:
     - name: wms-gateway
-      namespace: wms # 🔹 Points back to your gateway
+      namespace: wms 
       sectionName: https
   hostnames:
     - "grafana.datanetwork.online"
@@ -20,7 +20,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: prometheus-route
-  namespace: monitoring # 🔹 Correct namespace
+  namespace: monitoring 
 spec:
   parentRefs:
     - name: wms-gateway
