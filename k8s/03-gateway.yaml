@@ -14,15 +14,16 @@ spec:
       port: 80
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All # 🔹 Changed to All so it can handle redirects/challenges for any namespace
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "app.datanetwork.online"
+      # 🔹 Changed hostname to a wildcard to support app, grafana, and prometheus
+      hostname: "*.datanetwork.online" 
       tls:
         mode: Terminate
         certificateRefs:
           - name: wms-app-tls
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All # 🔹 Essential: allows HTTPRoutes in 'monitoring' namespace to attach

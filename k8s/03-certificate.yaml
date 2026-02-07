@@ -4,9 +4,11 @@ metadata:
   name: wms-app-tls
   namespace: wms
 spec:
-  secretName: wms-app-tls  # This matches the name in your Gateway spec
+  secretName: wms-app-tls
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
     - app.datanetwork.online
+    - grafana.datanetwork.online
+    - prometheus.datanetwork.online
