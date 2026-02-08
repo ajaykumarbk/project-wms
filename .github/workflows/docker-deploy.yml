@@ -2,7 +2,7 @@ name: Build & Push Docker Images
 
 on:
   push:
-    branches: [ develop, test] 
+    branches: [ main, develop, test] 
   workflow_dispatch:         #triger  
 
 jobs:
@@ -99,7 +99,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # 6. Success Message
+      # Success
       - name: Done
         run: |
           echo "Frontend & Backend images pushed successfully!"
