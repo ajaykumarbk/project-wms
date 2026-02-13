@@ -13,6 +13,7 @@ echo " Installin gateway api crd "
 kubectl kustomize "https://github.com/nginx/nginx-gateway-fabric/config/crd/gateway-api/experimental?ref=v2.4.1" | kubectl apply -f -
 
 echo " Installingnginx gate fabric using helm-"
+
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric \
   --create-namespace \
   -n nginx-gateway
