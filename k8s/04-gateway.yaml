@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: wms-gateway
+  namespace: wms
+spec:
+  gatewayClassName: nginx
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All # <--- This MUST be "All" so Cert-manager can attach the solver route
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.datanetwork.online"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wms-app-tls
+      allowedRoutes:
+        namespaces:
+          from: All # <--- Ensure this is "All" as well
