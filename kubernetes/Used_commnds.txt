@@ -1,0 +1,1191 @@
+    1  clear
+    2  sudo apt-get update -y
+    3  clear
+    4  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    5  unzip awscliv2.zip
+    6  sudo ./aws/install
+    7  sudo apt install unzip
+    8  unzip awscliv2.zip
+    9  sudo ./aws/install
+   10  aws 
+   11  clear
+   12  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.34.2/2025-11-13/bin/linux/amd64/kubectl
+   13  sha256sum -c kubectl.sha256
+   14  openssl sha1 -sha256 kubectl
+   15  chmod +x ./kubectl
+   16  mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+   17  echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+   18  kubectl
+   19  kubectl version
+   20  # for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+   21  ARCH=amd64
+   22  PLATFORM=$(uname -s)_$ARCH
+   23  curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+   24  # (Optional) Verify checksum
+   25  curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+   26  tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+   27  sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
+   28  aws configure
+   29  eksctl create cluster --name wms-prod --region us-east-1 --nodegroup-name wms-ng --nodes 2 --managed
+   30  aws configure
+   31  eksctl create cluster --name wms-prod --region us-east-1 --nodegroup-name wms-ng --nodes 2 --managed
+   32  eksctl create cluster --name wms-prod-2 --region us-east-1 --nodegroup-name wms-ng-2 --nodes 2 --managed
+   33  kubectl get nodes
+   34  git clone https://github.com/ajaykumarbk/WMS.git
+   35  ls
+   36  cp WMS/ wast-management-system
+   37  cp -r WMS/*  wast-management-system
+   38  mkdir wast-management-system
+   39  cp -r WMS/*  wast-management-system
+   40  ls
+   41  cd WMS/
+   42  ls
+   43  cd ..
+   44  cd wast-management-system/
+   45  ls
+   46  git status
+   47  cd ..
+   48  rm -rf wast-management-system/
+   49  ls
+   50  cd WMS/
+   51  ls
+   52  git branch
+   53  git checkout https-implement
+   54  git branch
+   55  ls
+   56  cd ..
+   57  cp -r WMS/*  wast-management-system
+   58  mkdir wast-management-system
+   59  cp -r WMS/*  wast-management-system
+   60  cd wast-management-system/
+   61  ls
+   62  git status
+   63  git init
+   64  git branch -m main
+   65  git branch
+   66  echo "# waste-management-system" >> README.md
+   67  git init
+   68  git add README.md
+   69  git commit -m "first commit"
+   70  git branch -M main
+   71  git remote add origin https://github.com/ajaykumarbk/waste-management-system.git
+   72  git push -u origin main
+   73  git config --global user.email "ajaykumarbk34@gmail.com"
+   74  echo "# waste-management-system" >> README.md
+   75  git init
+   76  git add README.md
+   77  git commit -m "first commit"
+   78  git branch -M main
+   79  git remote add origin https://github.com/ajaykumarbk/waste-management-system.git
+   80  git push -u origin main
+   81  ls
+   82  cd wast-management-system/
+   83  history
+   84  ls
+   85  git push -u origin main
+   86  git status
+   87  git add .
+   88  git commit -m "initial codebase"
+   89  git status
+   90  git push -u origin main
+   91  kubectl get nodes
+   92  eksctl utils associate-iam-oidc-provider   --cluster wms-prod   --region ap-south-1   --approve
+   93  eksctl utils associate-iam-oidc-provider   --cluster wms-prod-2   --region us-east-1   --approve
+   94  curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+   95  aws iam create-policy   --policy-name AWSLoadBalancerControllerIAMPolicy   --policy-document file://iam_policy.json
+   96  eksctl create iamserviceaccount   --cluster wms-prod-2   --namespace kube-system   --name aws-load-balancer-controller   --attach-policy-arn arn:aws:iam::712416034449:policy/AWSLoadBalancerControllerIAMPolicy   --approve
+   97  eksctl create iamserviceaccount   --cluster wms-prod-2   --namespace kube-system --region us-east-1  --name aws-load-balancer-controller   --attach-policy-arn arn:aws:iam::712416034449:policy/AWSLoadBalancerControllerIAMPolicy   --approve
+   98  helm repo add eks https://aws.github.io/eks-charts
+   99  helm repo update
+  100  helm install aws-load-balancer-controller eks/aws-load-balancer-controller   -n kube-system   --set clusterName=wms-prod   --set serviceAccount.create=false   --set serviceAccount.name=aws-load-balancer-controller
+  101  sudo apt-get install curl gpg apt-transport-https --yes
+  102  curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+  103  echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+  104  sudo apt-get update
+  105  sudo apt-get install helm
+  106  helm repo add eks https://aws.github.io/eks-charts
+  107  helm repo update
+  108  helm install aws-load-balancer-controller eks/aws-load-balancer-controller   -n kube-system   --set clusterName=wms-prod-2   --set serviceAccount.create=false   --set serviceAccount.name=aws-load-balancer-controller
+  109  kubectl get pods -n kube-system | grep load-balancer
+  110  helm install eg oci://docker.io/envoyproxy/gateway-helm   --version v1.6.1   -n envoy-gateway-system   --create-namespace
+  111  kubectl get pods -n envoy-gateway-system
+  112  cat <<EOF > envoy-public-service.yaml
+  113  apiVersion: v1
+  114  kind: Service
+  115  metadata:
+  116    name: envoy-gateway-public
+  117    namespace: envoy-gateway-system
+  118    annotations:
+  119      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  120      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  121  spec:
+  122    type: LoadBalancer
+  123    ports:
+  124      - port: 80
+  125        targetPort: 80
+  126    selector:
+  127      app.kubernetes.io/name: envoy-gateway
+  128  EOF
+  129  kubectl apply -f envoy-public-service.yaml
+  130  kubectl get svc -n envoy-gateway-system
+  131  clear
+  132  ls
+  133  cd frontend/
+  134  ls
+  135  ls -la
+  136  cat .env.production 
+  137  cat Dockerfile 
+  138  cd ..
+  139  ls
+  140  cd k8s/
+  141  ls
+  142  cat *.yaml
+  143  ls
+  144  cd ..
+  145  ls
+  146  cd k8s/
+  147  ls
+  148  rm -rf ./*
+  149  ls
+  150  cat <<EOF > 01-namespace.yaml
+  151  apiVersion: v1
+  152  kind: Namespace
+  153  metadata:
+  154    name: wms
+  155  EOF
+  156  cat <<EOF > 02-backend-secrets.yaml
+  157  apiVersion: v1
+  158  kind: Secret
+  159  metadata:
+  160    name: backend-secrets
+  161    namespace: wms
+  162  type: Opaque
+  163  stringData:
+  164    DB_HOST: "140.245.237.157"
+  165    DB_USER: "wms_app"
+  166    DB_PASSWORD: "Ajaykumar@12."
+  167    DB_NAME: "waste_management"
+  168    DB_PORT: "3306"
+  169    JWT_SECRET: "supersecret_jwt_key_2025_wms"
+  170  EOF
+  171  cat <<EOF > 02-backend-secrets.yaml
+  172  apiVersion: v1
+  173  kind: Secret
+  174  metadata:
+  175    name: backend-secrets
+  176    namespace: wms
+  177  type: Opaque
+  178  stringData:
+  179    DB_HOST: "140.245.237.157"
+  180    DB_USER: "wms_app"
+  181    DB_PASSWORD: "Ajaykumar@12."
+  182    DB_NAME: "waste_management"
+  183    DB_PORT: "3306"
+  184    JWT_SECRET: "supersecret_jwt_key_2025_wms"
+  185  EOF
+  186  cat <<EOF > 04-backend-deployment.yaml
+  187  apiVersion: apps/v1
+  188  kind: Deployment
+  189  metadata:
+  190    name: backend
+  191    namespace: wms
+  192  spec:
+  193    replicas: 2
+  194    selector:
+  195      matchLabels:
+  196        app: backend
+  197    template:
+  198      metadata:
+  199        labels:
+  200          app: backend
+  201      spec:
+  202        containers:
+  203          - name: backend
+  204            image: ajaykumara/backend-app:latest
+  205            imagePullPolicy: Always
+  206            ports:
+  207              - containerPort: 8080
+  208            envFrom:
+  209              - secretRef:
+  210                  name: backend-secrets
+  211            env:
+  212              - name: PUBLIC_API_URL
+  213                value: https://api.servernet.solutions
+  214            volumeMounts:
+  215              - name: uploads
+  216                mountPath: /app/uploads
+  217            readinessProbe:
+  218              httpGet:
+  219                path: /health
+  220                port: 8080
+  221              initialDelaySeconds: 10
+  222              periodSeconds: 10
+  223            livenessProbe:
+  224              httpGet:
+  225                path: /health
+  226                port: 8080
+  227              initialDelaySeconds: 30
+  228              periodSeconds: 20
+  229        volumes:
+  230          - name: uploads
+  231            persistentVolumeClaim:
+  232              claimName: backend-uploads-pvc
+  233  EOF
+  234  cat <<EOF > 05-backend-service.yaml
+  235  apiVersion: v1
+  236  kind: Service
+  237  metadata:
+  238    name: backend
+  239    namespace: wms
+  240  spec:
+  241    selector:
+  242      app: backend
+  243    ports:
+  244      - port: 80
+  245        targetPort: 8080
+  246  EOF
+  247  cat <<EOF > 06-frontend-deployment.yaml
+  248  apiVersion: apps/v1
+  249  kind: Deployment
+  250  metadata:
+  251    name: frontend
+  252    namespace: wms
+  253  spec:
+  254    replicas: 2
+  255    selector:
+  256      matchLabels:
+  257        app: frontend
+  258    template:
+  259      metadata:
+  260        labels:
+  261          app: frontend
+  262      spec:
+  263        containers:
+  264          - name: frontend
+  265            image: ajaykumara/frontend-app:latest
+  266            imagePullPolicy: Always
+  267            ports:
+  268              - containerPort: 80
+  269            readinessProbe:
+  270              httpGet:
+  271                path: /
+  272                port: 80
+  273              initialDelaySeconds: 5
+  274              periodSeconds: 10
+  275            livenessProbe:
+  276              httpGet:
+  277                path: /
+  278                port: 80
+  279              initialDelaySeconds: 20
+  280              periodSeconds: 20
+  281  EOF
+  282  cat <<EOF > 07-frontend-service.yaml
+  283  apiVersion: v1
+  284  kind: Service
+  285  metadata:
+  286    name: frontend
+  287    namespace: wms
+  288  spec:
+  289    selector:
+  290      app: frontend
+  291    ports:
+  292      - port: 80
+  293        targetPort: 80
+  294  EOF
+  295  cat <<EOF > 08-gatewayclass.yaml
+  296  apiVersion: gateway.networking.k8s.io/v1
+  297  kind: GatewayClass
+  298  metadata:
+  299    name: envoy
+  300  spec:
+  301    controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  302  EOF
+  303  cat <<EOF > 09-gateway.yaml
+  304  apiVersion: gateway.networking.k8s.io/v1
+  305  kind: Gateway
+  306  metadata:
+  307    name: wms-gateway
+  308    namespace: wms
+  309  spec:
+  310    gatewayClassName: envoy
+  311    listeners:
+  312      - name: http
+  313        protocol: HTTP
+  314        port: 80
+  315  EOF
+  316  cat <<EOF > 10-httproutes.yaml
+  317  apiVersion: gateway.networking.k8s.io/v1
+  318  kind: HTTPRoute
+  319  metadata:
+  320    name: wms-route
+  321    namespace: wms
+  322  spec:
+  323    parentRefs:
+  324      - name: wms-gateway
+  325    hostnames:
+  326      - app.servernet.solutions
+  327      - api.servernet.solutions
+  328    rules:
+  329      - matches:
+  330          - path:
+  331              type: PathPrefix
+  332              value: /api
+  333        backendRefs:
+  334          - name: backend
+  335            port: 80
+  336      - matches:
+  337          - path:
+  338              type: PathPrefix
+  339              value: /uploads
+  340        backendRefs:
+  341          - name: backend
+  342            port: 80
+  343      - matches:
+  344          - path:
+  345              type: PathPrefix
+  346              value: /
+  347        backendRefs:
+  348          - name: frontend
+  349            port: 80
+  350  EOF
+  351  cd ..
+  352  ls
+  353  mv envoy-public-service.yaml ./k8s/
+  354  ls
+  355  cd k8s/
+  356  ls
+  357  cat envoy-public-service.yaml 
+  358  kubectl apply -f 01-namespace.yaml
+  359  kubectl apply -f 02-backend-secrets.yaml
+  360  kubectl apply -f 03-backend-uploads-pvc.yaml
+  361  kubectl apply -f 04-backend-deployment.yaml
+  362  kubectl apply -f 05-backend-service.yaml
+  363  kubectl apply -f 06-frontend-deployment.yaml
+  364  kubectl apply -f 07-frontend-service.yaml
+  365  kubectl apply -f 08-gatewayclass.yaml
+  366  kubectl apply -f 09-gateway.yaml
+  367  kubectl apply -f 10-httproutes.yaml
+  368  ls
+  369  cat <<EOF > 03-backend-uploads-pvc.yaml
+  370  apiVersion: v1
+  371  kind: PersistentVolumeClaim
+  372  metadata:
+  373    name: backend-uploads-pvc
+  374    namespace: wms
+  375  spec:
+  376    accessModes:
+  377      - ReadWriteOnce
+  378    storageClassName: gp3
+  379    resources:
+  380      requests:
+  381        storage: 5Gi
+  382  EOF
+  383  kubectl apply -f 03-backend-uploads-pvc.yaml
+  384  kubectl get pvc -n wms
+  385  kubectl get pods -n wms
+  386  kubectl get gateway -n wms
+  387  kubectl get httproute -n wms
+  388  kubectl get svc -n envoy-gateway-system
+  389  kubectl get pods -n wms
+  390  kubectl describe pod backend-59875cd964-42m4g
+  391  kubectl describe pod backend-59875cd964-42m4g -n wms
+  392  kubectl get pvc -n wms
+  393  kubectl get pods -n wms
+  394  clear
+  395  kubectl get svc -n wms
+  396  kubectl get svc -n envoy-gateway-system
+  397  kubectl get all -n wms
+  398  kubectl describe pod backend-59875cd964-42m4g
+  399  kubectl describe pod backend-59875cd964-42m4g -n wms
+  400  kubectl get pvc -n wms
+  401  kubectl get csidriver
+  402  aws eks create-addon   --cluster-name wms-prod-2   --addon-name aws-ebs-csi-driver
+  403  kubectl apply -k   "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+  404  kubectl version --short
+  405  kubectl apply -k   "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=v1.21.0"
+  406  kubectl get csidriver
+  407  kubectl get pvc -n wms
+  408  kubectl describe pvc backend-uploads-pvc -n wms
+  409  kubectl logs -n kube-system deployment/ebs-csi-controller
+  410  kubectl get storageclass
+  411  la
+  412  cat 03-backend-uploads-pvc.yaml 
+  413  sudo nano 03-backend-uploads-pvc.yaml 
+  414  kubectl apply -f 03-backend-uploads-pvc.yaml 
+  415  kubectl apply -f 03-backend-uploads-pvc.yaml
+  416  sudo nano 03-backend-uploads-pvc.yaml 
+  417  kubectl delete pvc backend-uploads-pvc -n wms
+  418  kubectl apply -f 03-backend-uploads-pvc.yaml
+  419  kubectl get pvc -n wms
+  420  ls
+  421  clear
+  422  aws configure
+  423  aws s3 ls
+  424  awscli
+  425  ls
+  426  aws eks list-clusters
+  427  ls
+  428  mkdir eks-tf
+  429  cd eks-tf/
+  430  ls
+  431  clear
+  432  aws s3 ls
+  433  aws configur
+  434  aws configure
+  435  aws s3 ls
+  436  aws sts get-caller-identity
+  437  terraform
+  438  wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  439  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+  440  sudo apt update && sudo apt install terraform
+  441  ls
+  442  clear
+  443  ls
+  444  eksctl
+  445  aws configure
+  446  aws s3 ls
+  447  aws sts get-caller-identity
+  448  ls
+  449  clear
+  450  aws s3 ls
+  451  eksctl create cluster   --name sandbox-eks   --region us-east-1   --version 1.29   --nodegroup-name ng-1   --node-type t3.micro   --nodes 1   --nodes-min 1   --nodes-max 1   --managed   --with-oidc   --ssh-access=false   --node-volume-size 20
+  452  kubectl 
+  453  kubectl
+  454  clear
+  455  ls
+  456  kubectl config current-context
+  457  kubectl config get-contexts
+  458  kubectl get nodes
+  459  kubectl get namepaces
+  460  kubectl get namepace
+  461  kubectl get namespaces
+  462  ls
+  463  rm -rf wast-management-system/
+  464  ls
+  465  clear
+  466  kubectl get namespaces
+  467  kubectl get pods
+  468  kubectl get pods -n default
+  469  git clone https://github.com/ajaykumarbk/project-wms.git
+  470  ls
+  471  cd project-wms/
+  472  ls
+  473  cd k8s/
+  474  ls
+  475  cat 07-frontend-service.yaml 
+  476  cat 05
+  477  cat 05-backend-service.yaml 
+  478  cat 03-gateway.yaml 
+  479  clear
+  480  cat 03-gateway.yaml 
+  481  clear
+  482  ls
+  483  cat *.yaml
+  484  clear
+  485  ls
+  486  cd ..
+  487  ls
+  488  cat install-ngf.sh 
+  489  cd ..
+  490  ls
+  491  mkdir wms-eks-clusters
+  492  ls
+  493  cp project-wms/* wms-eks-clusters/
+  494  cp -r project-wms/* wms-eks-clusters/
+  495  ls
+  496  cd wms-eks-clusters/
+  497  ls
+  498  git status
+  499  git remove -v
+  500  git remote -v
+  501  git init
+  502  git config --global init.defaultBranch main
+  503  git branch
+  504  git branch -m main
+  505  git branch
+  506  git branches
+  507  git branchs
+  508  clear
+  509  git status
+  510  git remote set url oringin main https://github.com/ajaykumarbk/WMS.git
+  511  git remote set-url oringin main https://github.com/ajaykumarbk/WMS.git
+  512  git remote set-url origin main https://github.com/ajaykumarbk/WMS.git
+  513  git remote set-url main https://github.com/ajaykumarbk/WMS.git
+  514  git remote set-url https://github.com/ajaykumarbk/WMS.git
+  515  git remote set-url --add https://github.com/ajaykumarbk/WMS.git
+  516  git remote set-url --add origin https://github.com/ajaykumarbk/WMS.git
+  517  git remote set-url --add main https://github.com/ajaykumarbk/WMS.git
+  518  git remote add origin https://github.com/ajaykumarbk/WMS.git
+  519  git remote -v
+  520  git remote set-url --add main https://github.com/ajaykumarbk/WMS.git
+  521  git fetch
+  522  ls
+  523  cd k8s/
+  524  ls
+  525  cat 03-gateway.yaml 
+  526  clear
+  527  ls
+  528  git push -u origin main
+  529  cd ..
+  530  git push -u origin main
+  531  git add .
+  532  git status
+  533  git commit -m "initial files"
+  534  git status
+  535  git push -u origin main
+  536  git push -f -u origin main
+  537  git status
+  538  ls
+  539  git branch
+  540  cd
+  541  cd project-wms/
+  542  ls
+  543  ls -la
+  544  pwd
+  545  cd
+  546  cd wms-eks-clusters/
+  547  ls -la
+  548  pwd
+  549  cd .
+  550  cd
+  551  cd project-wms/
+  552  cp .github/ /home/cloud_user/wms-eks-clusters
+  553  cp -r .github/ /home/cloud_user/wms-eks-clusters
+  554  ls
+  555  cd .
+  556  cd
+  557  cd wms-eks-clusters/
+  558  ls -la
+  559  git status
+  560  git add
+  561  git add .
+  562  git commit -m "cicd"
+  563  git push -u origin main
+  564  ls
+  565  kubectl get storageclass
+  566  aws acm list-certificates
+  567  aws acm list-certificates --region us-east-1
+  568  aws configure get region
+  569  aws acm request-certificate   --domain-name datanetwork.online   --subject-alternative-names "*.datanetwork.online"   --validation-method DNS
+  570  aws acm describe-certificate   --certificate-arn arn:aws:acm:us-east-1:975050311129:certificate/1a0a9c01-eb44-4c04-a2f6-0a1d7f9f91b8
+  571  lear
+  572  clea
+  573  c
+  574  nslookup _40368794369b1a5cef239e88946279ed.datanetwork.online
+  575  clear
+  576  aws acm describe-certificate   --certificate-arn arn:aws:acm:us-east-1:975050311129:certificate/1a0a9c01-eb44-4c04-a2f6-0a1d7f9f91b8
+  577  [200~nslookup _40368794369b1a5cef239e88946279ed.datanetwork.online
+  578  ~nslookup _40368794369b1a5cef239e88946279ed.datanetwork.online
+  579  aws acm describe-certificate   --certificate-arn arn:aws:acm:us-east-1:975050311129:certificate/1a0a9c01-eb44-4c04-a2f6-0a1d7f9f91b8   --query "Certificate.Status"
+  580  kubectl get pods -n kube-system | grep aws-load-balancer-controller
+  581  aws eks describe-cluster --name sandbox-eks --query "cluster.arn"
+  582  ls
+  583  cd wms-eks-clusters/
+  584  ls
+  585  cd k8s/
+  586  cat <<EOF > wms-eks-production.yaml
+  587  ---
+  588  apiVersion: v1
+  589  kind: Namespace
+  590  metadata:
+  591    name: wms
+  592  ---
+  593  apiVersion: v1
+  594  kind: Secret
+  595  metadata:
+  596    name: backend-secrets
+  597    namespace: wms
+  598  type: Opaque
+  599  stringData:
+  600    DB_HOST: "140.245.237.157"
+  601    DB_USER: "wms_app"
+  602    DB_PASSWORD: "Ajaykumar@12." 
+  603    DB_NAME: "waste_management"
+  604    DB_PORT: "3306"
+  605    JWT_SECRET: "CHANGE_ME"
+  606    PORT: "5000"
+  607    NODE_ENV: "production"
+  608    ALLOWED_ORIGINS: "https://app.datanetwork.online"
+  609  ---
+  610  apiVersion: v1
+  611  kind: PersistentVolumeClaim
+  612  metadata:
+  613    name: backend-uploads-pvc
+  614    namespace: wms
+  615  spec:
+  616    accessModes:
+  617      - ReadWriteOnce
+  618    storageClassName: gp2 
+  619    resources:
+  620      requests:
+  621        storage: 5Gi
+  622  ---
+  623  apiVersion: apps/v1
+  624  kind: Deployment
+  625  metadata:
+  626    name: backend
+  627    namespace: wms
+  628  spec:
+  629    replicas: 1
+  630    selector:
+  631      matchLabels:
+  632        app: backend
+  633    template:
+  634      metadata:
+  635        labels:
+  636          app: backend
+  637      spec:
+  638        containers:
+  639          - name: backend
+  640            image: ajaykumara/backend-wms-app:3b34d72
+  641            imagePullPolicy: Always
+  642            ports:
+  643              - containerPort: 5000
+  644            envFrom:
+  645              - secretRef:
+  646                  name: backend-secrets
+  647            readinessProbe:
+  648              httpGet:
+  649                path: /health
+  650                port: 5000
+  651              initialDelaySeconds: 10
+  652              periodSeconds: 10
+  653            livenessProbe:
+  654              httpGet:
+  655                path: /health
+  656                port: 5000
+  657              initialDelaySeconds: 30
+  658              periodSeconds: 20
+  659            volumeMounts:
+  660              - name: uploads
+  661                mountPath: /app/uploads
+  662        volumes:
+  663          - name: uploads
+  664            persistentVolumeClaim:
+  665              claimName: backend-uploads-pvc
+  666  ---
+  667  apiVersion: v1
+  668  kind: Service
+  669  metadata:
+  670    name: backend
+  671    namespace: wms
+  672  spec:
+  673    type: ClusterIP
+  674    selector:
+  675      app: backend
+  676    ports:
+  677      - port: 80
+  678        targetPort: 5000
+  679  ---
+  680  apiVersion: apps/v1
+  681  kind: Deployment
+  682  metadata:
+  683    name: frontend
+  684    namespace: wms
+  685  spec:
+  686    replicas: 1
+  687    selector:
+  688      matchLabels:
+  689        app: frontend
+  690    template:
+  691      metadata:
+  692        labels:
+  693          app: frontend
+  694      spec:
+  695        containers:
+  696          - name: frontend
+  697            image: ajaykumara/frontend-wms-app:3b34d72
+  698            imagePullPolicy: Always
+  699            ports:
+  700              - containerPort: 80
+  701            readinessProbe:
+  702              httpGet:
+  703                path: /
+  704                port: 80
+  705              initialDelaySeconds: 5
+  706              periodSeconds: 10
+  707            livenessProbe:
+  708              httpGet:
+  709                path: /
+  710                port: 80
+  711              initialDelaySeconds: 20
+  712              periodSeconds: 20
+  713  ---
+  714  apiVersion: v1
+  715  kind: Service
+  716  metadata:
+  717    name: frontend
+  718    namespace: wms
+  719  spec:
+  720    type: ClusterIP
+  721    selector:
+  722      app: frontend
+  723    ports:
+  724      - port: 80
+  725        targetPort: 80
+  726  ---
+  727  apiVersion: networking.k8s.io/v1
+  728  kind: Ingress
+  729  metadata:
+  730    name: wms-ingress
+  731    namespace: wms
+  732    annotations:
+  733      kubernetes.io/ingress.class: alb
+  734      alb.ingress.kubernetes.io/scheme: internet-facing
+  735      alb.ingress.kubernetes.io/target-type: ip
+  736      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+  737      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:975050311129:certificate/1a0a9c01-eb44-4c04-a2f6-0a1d7f9f91b8
+  738      alb.ingress.kubernetes.io/ssl-redirect: "443"
+  739  spec:
+  740    ingressClassName: alb
+  741    rules:
+  742      - host: app.datanetwork.online
+  743        http:
+  744          paths:
+  745            - path: /api
+  746              pathType: Prefix
+  747              backend:
+  748                service:
+  749                  name: backend
+  750                  port:
+  751                    number: 80
+  752            - path: /uploads
+  753              pathType: Prefix
+  754              backend:
+  755                service:
+  756                  name: backend
+  757                  port:
+  758                    number: 80
+  759            - path: /
+  760              pathType: Prefix
+  761              backend:
+  762                service:
+  763                  name: frontend
+  764                  port:
+  765                    number: 80
+  766  EOF
+  767  ls
+  768  kubectl apply -f wms-eks-production.yaml
+  769  kubectl get pods -n wms
+  770  kubectl get pvc -n wms
+  771  kubectl get ingress -n wms
+  772  kubectl get pods -n wms
+  773  kubectl logs backend-6bd56998d4-vgm2q
+  774  kubectl logs backend-6bd56998d4-vgm2q -n wms
+  775  kubectl get pods -n wms
+  776  clar
+  777  clear
+  778  kubectl get pods -n wms
+  779  kubectl describe pod backend-6bd56998d4-vgm2q -n wms
+  780  clear
+  781  kubectl get nodes -o wide
+  782  kubectl describe node ip-192-168-37-244.ec2.internal | grep -i pods
+  783  eksctl scale nodegroup   --cluster sandbox-eks   --name ng-1   --nodes 2   --region us-east-1
+  784  eksctl scale nodegroup   --cluster sandbox-eks   --name ng-1   --nodes-min 1   --nodes-max 2   --nodes 2   --region us-east-1
+  785  eksctl get nodegroup --cluster sandbox-eks --region us-east-1 --name ng-1
+  786  clear
+  787  eksctl get nodegroup --cluster sandbox-eks --region us-east-1 --name ng-1
+  788  kubectl get nodes
+  789  eksctl get nodegroup --cluster sandbox-eks --region us-east-1 --name ng-1
+  790  kubectl get nodes
+  791  kubectl get pods -n wms
+  792  kubectl describe node ip-192-168-37-244.ec2.internal | grep -i pods
+  793  kubectl describe node ip-192-168-6-144.ec2.internal | grep -i pods
+  794  eksctl delete nodegroup   --cluster sandbox-eks   --name ng-1   --region us-east-1
+  795  code .
+  796  sudo snap install code
+  797  sudo snap install code --classic
+  798  ls
+  799  cd wms-eks-clusters/
+  800  ls
+  801  cd .
+  802  cd
+  803  cd eks-tf/
+  804  ls
+  805  code .
+  806  clear
+  807  aws configure
+  808  aws s3 ls
+  809  ls
+  810  cd project-wms/
+  811  ls
+  812  cd k8s/
+  813  ls
+  814  git status
+  815  sudo nano prod-eks-config.yaml
+  816  eksctl create cluster -f prod-eks-config.yaml
+  817  sudo nano prod-eks-config.yaml
+  818  eksctl create cluster -f prod-eks-config.yaml
+  819  eksctl create iamserviceaccount     --name ebs-csi-controller-sa     --namespace kube-system     --cluster prod-lab-cluster     --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy     --approve     --role-only
+  820  kubectl get nodes -o wide
+  821  ls
+  822  cat *.yaml
+  823  ls
+  824  cd ..
+  825  ls
+  826  cat install-ngf.sh 
+  827  chmod +x install-ngf.sh 
+  828  ls
+  829  ./install-ngf.sh 
+  830  kubectl get pods -n monitoring
+  831  ls
+  832  cd k8s/
+  833  ls
+  834  sudo nano 01-storage.yaml
+  835  sudo nano 03-certs.yaml
+  836  sudo nano 04-gateway.yaml
+  837  sudo nano 05-backend.yaml
+  838  sudo nano 06-frontend.yaml
+  839  sudo nano 07-routes.yaml
+  840  kubectl get deployment -n kube-system aws-load-balancer-controller
+  841  # Download the latest IAM policy
+  842  curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json
+  843  # Create the IAM policy in your AWS account
+  844  aws iam create-policy     --policy-name AWSLoadBalancerControllerIAMPolicy     --policy-document file://iam_policy.json
+  845  eksctl create iamserviceaccount   --cluster=prod-lab-cluster   --namespace=kube-system   --name=aws-load-balancer-controller   --role-name AmazonEKSLoadBalancerControllerRole   --attach-policy-arn=arn:aws:iam::533267417170:policy/AWSLoadBalancerControllerIAMPolicy   --approve
+  846  aws eks describe-cluster --name prod-lab-cluster --query "cluster.resourcesVpcConfig.vpcId" --output text
+  847  # 1. Add the EKS Helm repo
+  848  helm repo add eks https://aws.github.io/eks-charts
+  849  helm repo update
+  850  # 2. Install the controller
+  851  helm install aws-load-balancer-controller eks/aws-load-balancer-controller   -n kube-system   --set clusterName=prod-lab-cluster   --set serviceAccount.create=false   --set serviceAccount.name=aws-load-balancer-controller   --set region=us-east-1   --set vpcId=vpc-008a83ee5cd06fc88
+  852  kubectl get deployment -n kube-system aws-load-balancer-controller
+  853  sudo nano 02-secrets.yaml
+  854  sudo nano 00-namespace.yaml
+  855  ls -la
+  856  # Add the NGINX Helm repo
+  857  helm repo add nginx-stable https://helm.nginx.com/stable
+  858  helm repo update
+  859  # Install NGINX Gateway Fabric
+  860  helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric   --create-namespace   -n nginx-gateway   --set nginx.service.type=LoadBalancer
+  861  helm list -A
+  862  helm uninstall ngf -n nginx-gateway
+  863  helm list -A
+  864  helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric   --create-namespace   -n nginx-gateway   --set nginx.service.type=LoadBalancer   --set "nginx.service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-type=external"   --set "nginx.service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-nlb-target-type=instance"   --set "nginx.service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-scheme=internet-facing"
+  865  helm uninstall ngf -n nginx-gateway
+  866  kubectl delete ns nginx-gateway
+  867  helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric   --create-namespace   -n nginx-gateway   --set service.type=LoadBalancer   --set "service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-type=nlb"   --set "service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-scheme=internet-facing"   --set "service.annotations.service\.beta\.kubernetes\.io/aws-load-balancer-nlb-target-type=instance"
+  868  kubectl get svc -n nginx-gateway
+  869  sudo nano 04-gateway.yaml 
+  870  kubectl get svc -n nginx-gateway
+  871  clear
+  872  kubectl get svc -n nginx-gateway
+  873  # 1. Create the Namespace
+  874  kubectl apply -f 00-namespace.yaml
+  875  # 2. Setup Storage and Secrets
+  876  kubectl apply -f 01-storage.yaml
+  877  kubectl apply -f 02-secrets.yaml
+  878  # 3. Setup Cert-Manager (Wait for CRDs if needed)
+  879  kubectl apply -f 03-certs.yaml
+  880  # 4. Create the Gateway Infrastructure
+  881  # This triggers the AWS NLB creation (takes 2-3 mins)
+  882  kubectl apply -f 04-gateway.yaml
+  883  # 5. Deploy the Apps
+  884  kubectl apply -f 05-backend.yaml
+  885  kubectl apply -f 06-frontend.yaml
+  886  # 6. Finally, apply the Routing rules
+  887  kubectl apply -f 07-routes.yaml
+  888  kubectl get pods -n wms
+  889  kubectl get svc
+  890  kubectl get svc -n wms
+  891  clear
+  892  kubectl get pods -n wms
+  893  kubectl get svc -n wms
+  894  kubectl get certificate -n wms
+  895  kubectl describe challenge -n wms
+  896  # Test the backend via the Gateway's ClusterIP
+  897  kubectl run curl-test --image=curlimages/curl -i --tty --rm --   curl -v -H "Host: app.datanetwork.online" http://10.100.185.137/health
+  898  # This mimics what Let's Encrypt is trying to do
+  899  curl -v -H "Host: app.datanetwork.online" http://k8s-wms-wmsgatew-a3e93ded8b-1be002957dba26e5.elb.us-east-1.amazonaws.com/.well-known/acme-challenge/6uPn_Mu97tkPEOGurWiuP8gRvamxDJ3qgTUhWl6OvT8
+  900  kubectl logs -n cert-manager -l app.kubernetes.io/instance=cert-manager
+  901  kubectl get certificate -n wms
+  902  kubectl describe challenge -n wms
+  903  cd project-wms/
+  904  cd k8s/
+  905  sudo nano 04-gateway.yaml 
+  906  kubectl apply -f 04-gateway.yaml
+  907  kubectl get httproute -n wms
+  908  aws configure
+  909  aws s3 ls
+  910  ls
+  911  cd project-wms/
+  912  ls
+  913  mkdir kubernetes
+  914  cd k
+  915  cd kubernetes/
+  916  vim vpc.yaml
+  917  vim cluster.yaml
+  918  eksctl create cluster -f cluster.yaml
+  919  kubectl get nodes
+  920  kubectl get nodes -o wide
+  921  curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+  922  aws iam create-policy   --policy-name AWSLoadBalancerControllerIAMPolicy   --policy-document file://iam_policy.json
+  923  eksctl create iamserviceaccount   --cluster prod-lab-cluster   --namespace kube-system   --name aws-load-balancer-controller   --attach-policy-arn arn:aws:iam::648098100376:policy/AWSLoadBalancerControllerIAMPolicy   --approve   --region us-east-1
+  924  helm repo add eks https://aws.github.io/eks-charts
+  925  helm repo update
+  926  helm install aws-load-balancer-controller eks/aws-load-balancer-controller   -n kube-system   --set clusterName=prod-lab-cluster   --set serviceAccount.create=false   --set serviceAccount.name=aws-load-balancer-controller
+  927  kubectl get pods -n kube-system
+  928  sudo nano 01-storageclass.yaml
+  929  sudo nano 02-backend-uploads-pvc.yaml
+  930  clear
+  931  aws acm list-certificates --region us-east-1
+  932  clear
+  933  aws acm describe-certificate   --certificate-arn arn:aws:acm:us-east-1:648098100376:certificate/492135a9-f903-4e71-879d-e485939eff64   --region us-east-1
+  934  OA
+  935  cd project-wms/kubernetes/
+  936  ls
+  937  dig _6f4d4441b0d771e01fc80c079c72aabc.app.datanetwork.online CNAME
+  938  aws acm list-certificates --region us-east-1
+  939  aws acm describe-certificate   --certificate-arn arn:aws:acm:us-east-1:648098100376:certificate/492135a9-f903-4e71-879d-e485939eff64   --region us-east-1
+  940  s
+  941  ls
+  942  clear
+  943  cat <<EOF > 01-namespace.yaml
+  944  apiVersion: v1
+  945  kind: Namespace
+  946  metadata:
+  947    name: wms
+  948  EOFcat <<EOF > 01-namespace.yaml
+  949  apiVersion: v1
+  950  kind: Namespace
+  951  metadata:
+  952    name: wms
+  953  EOF
+  954  clear
+  955  cd project-wms/kubernetes/
+  956  cat <<EOF > 01-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wms
+EOF
+
+  957  ls
+  958  cat <<EOF > 02-storageclass.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp2
+EOF
+
+  959  cat <<EOF > 03-backend-uploads-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backend-uploads-pvc
+  namespace: wms
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp2
+  resources:
+    requests:
+      storage: 5Gi
+EOF
+
+  960  cat <<EOF > 04-backend-secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secrets
+  namespace: wms
+type: Opaque
+stringData:
+  DB_HOST: "140.245.237.157"
+  DB_USER: "wms_app"
+  DB_PASSWORD: "Ajaykumar@12."
+  DB_NAME: "waste_management"
+  DB_PORT: "3306"
+  JWT_SECRET: "supersecret_jwt_key_2025_wms"
+  PORT: "5000"
+  NODE_ENV: "production"
+  ALLOWED_ORIGINS: "https://app.datanetwork.online"
+EOF
+
+  961  cat <<EOF > 05-backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: wms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: ajaykumara/backend-wms-app:3b34d72
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: backend-secrets
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: backend-uploads-pvc
+EOF
+
+  962  cat <<EOF > 06-backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: wms
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+  - port: 80
+    targetPort: 5000
+EOF
+
+  963  cat <<EOF > 07-frontend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: wms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ajaykumara/frontend-wms-app:3b34d72
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: "150m"
+            memory: "200Mi"
+          limits:
+            cpu: "400m"
+            memory: "400Mi"
+EOF
+
+  964  cat <<EOF > 08-frontend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: wms
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+EOF
+
+  965  ls
+  966  cat <<EOF > 09-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wms-ingress
+  namespace: wms
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:648098100376:certificate/492135a9-f903-4e71-879d-e485939eff64
+spec:
+  ingressClassName: alb
+  rules:
+  - host: app.datanetwork.online
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 80
+      - path: /uploads
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+EOF
+
+  967  kubectl apply -f 01-namespace.yaml
+  968  kubectl apply -f 02-storageclass.yaml
+  969  kubectl apply -f 03-backend-uploads-pvc.yaml
+  970  kubectl apply -f 04-backend-secrets.yaml
+  971  kubectl apply -f 05-backend-deployment.yaml
+  972  kubectl apply -f 06-backend-service.yaml
+  973  kubectl apply -f 07-frontend-deployment.yaml
+  974  kubectl apply -f 08-frontend-service.yaml
+  975  kubectl apply -f 09-ingress.yaml
+  976  kubectl get ingress -n wms
+  977  dig app.datanetwork.online
+  978  kubectl get ingress -n wms
+  979  curl -vk https://app.datanetwork.online
+  980  kubectl get pvc -n wms
+  981  history
+  982  history >> Used_commnds.txt
