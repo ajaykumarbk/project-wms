@@ -1,47 +1,48 @@
+# Waste Management System (WMS) — Production Deployment on AWS EKS
 
-# Waste Management System (WMS)
+A production-grade, cloud-native Waste Management System deployed on Amazon EKS, exposed securely using AWS Load Balancer Controller (ALB), with TLS via ACM, DNS via Cloudflare, and monitoring using Prometheus and Grafana.
 
-A production-grade, cloud-native Waste Management System designed to demonstrate real-world full-stack development and DevOps practices.
-The application is deployed on a Google Kubernetes Engine (GKE) Standard cluster and exposed securely using NGINX Gateway API Fabric backed by a Google Cloud external Load Balancer, with DNS managed via Cloudflare.
+This project demonstrates how enterprise applications are deployed, secured, monitored, and operated in Kubernetes.
 
-This project focuses not just on features, but on how real production systems are built, deployed, monitored, and operated.
+# Architecture Overview
+
+Flow
+
+User → Cloudflare DNS → AWS ALB → Kubernetes Ingress → Services → Pods → EBS Storage
+
+Core Components
+Layer	Technology
+Container Orchestration	Amazon EKS
+Load Balancer	AWS Application Load Balancer
+TLS	AWS Certificate Manager
+DNS	Cloudflare
+Storage	AWS EBS CSI
+Monitoring	Prometheus + Grafana
+CI/CD	GitHub Actions
+Container	Docker
+
 
 # Features
 
-JWT-based user authentication
-
-Report waste issues with image uploads
+JWT Authentication
 
 Complaint lifecycle tracking
-Pending → In Progress → Resolved
 
-Admin dashboard for complaint management
+Image upload with persistent storage
+
+Admin dashboard
 
 Real-time updates using Socket.IO
 
 Analytics dashboard
 
-Pagination and role-based access control (RBAC)
+RBAC access
 
-# Architecture Overview
-
-Frontend and backend are fully containerized
-
-Deployed on GKE Standard (production-style cluster)
-
-NGINX Gateway API Fabric handles ingress using Kubernetes Gateway API
-
-Google Cloud provisions an external Load Balancer
-
-Application domain is mapped via Cloudflare A record
-
-Persistent storage for uploaded images using PVCs
-
-CI/CD pipeline automates build, scan, and deployment
+Production-grade monitoring
 
 # Tech Stack
 
-Frontend
+# Frontend
 
 React (Vite)
 
@@ -51,127 +52,272 @@ Socket.IO Client
 
 Backend
 
-Node.js + Express
+Node.js
+
+Express
+
+Socket.IO
+
+Multer
 
 # Database
 
 MySQL
 
-Multer (image uploads)
-
-Socket.IO
-
-# DevOps & Platform
+# DevOps
 
 Docker
 
-Google Kubernetes Engine (GKE – Standard)
+Amazon EKS
 
-NGINX Gateway API Fabric
-
-Google Cloud External Load Balancer
+AWS Load Balancer Controller
 
 Cloudflare DNS
 
-GitHub Actions (CI/CD)
+ACM
 
-SonarQube
+Helm
 
-# Networking & Routing
+GitHub Actions
 
-# NGINX Gateway API Fabric
+Prometheus
 
-Acts as the cluster ingress layer
+Grafana
 
-Uses the Kubernetes Gateway API
+# 1 Prerequisites
 
-Integrates natively with Google Cloud Load Balancer
+Install tools:
 
-Clean separation between frontend and backend traffic
+aws --version
+kubectl version --client
+helm version
+eksctl version
+docker version
 
-HTTP Routing Rules
-/api        → Backend Service
-/uploads   → Backend Service
-/           → Frontend Service
+# Configure AWS:
 
-# External Access
+aws configure
 
-Google Cloud assigns a public Load Balancer IP
+aws sts get-caller-identity
+# 2 Create EKS Cluster
 
-Cloudflare A record points the domain to the LB IP
+cluster.yaml
 
-# HTTPS handled via:
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
 
-Cert-Manager 
+metadata:
+ name: prod-lab-cluster
+ region: us-east-1
+ version: "1.31"
 
-Install Cert-Manager
+iam:
+ withOIDC: true
 
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+managedNodeGroups:
+ - name: standard-nodes
+   instanceType: t3.medium
+   desiredCapacity: 2
+   minSize: 1
+   maxSize: 4
+   volumeSize: 20
+
+addons:
+ - name: vpc-cni
+ - name: coredns
+ - name: kube-proxy
+ - name: aws-ebs-csi-driver
+
+# Create cluster:
+
+eksctl create cluster -f cluster.yaml
+
+Verify:
+
+kubectl get nodes
+
+# 3 Install AWS Load Balancer Controller
+
+Create IAM Policy
+
+curl -o iam_policy.json \
+https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+
+aws iam create-policy \
+ --policy-name AWSLoadBalancerControllerIAMPolicy \
+ --policy-document file://iam_policy.json
 
 
-# CI/CD Pipeline
+# Create IRSA
 
-Implemented using GitHub Actions:
+eksctl create iamserviceaccount \
+ --cluster prod-lab-cluster \
+ --namespace kube-system \
+ --name aws-load-balancer-controller \
+ --attach-policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy \
+ --approve
 
-Triggered on every branch push
 
-SonarQube scan with quality gate enforcement
+# Install Controller
 
-Docker image build for frontend and backend
+helm repo add eks https://aws.github.io/eks-charts
 
-Images pushed to Docker Hub (:latest)
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+ -n kube-system \
+ --set clusterName=prod-lab-cluster \
+ --set serviceAccount.create=false \
+ --set serviceAccount.name=aws-load-balancer-controller
 
-Kubernetes rollout via:
+Verify:
 
-Deployment restart, or
+kubectl get pods -n kube-system
 
-Image tag update
+# 4 Storage Configuration
 
-This setup mirrors real production CI/CD workflows.
+storageclass.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
 
-# Health, Reliability & Resilience
+metadata:
+ name: gp3
 
-/health endpoint for backend service
+provisioner: ebs.csi.aws.com
 
-Kubernetes readiness & liveness probes
+parameters:
+ type: gp3
 
-Graceful shutdown handling
+volumeBindingMode: WaitForFirstConsumer
 
-Resilient Socket.IO connections
+Apply:
 
-Persistent storage ensures uploads survive pod restarts
+kubectl apply -f storageclass.yaml
 
-# Monitoring & Observability
+Verify:
 
-Monitoring is implemented using Prometheus and Grafana.
+kubectl get storageclass
 
-Installation
+
+# 5 Deploy Application
+
+Apply manifests:
+
+kubectl apply -f 01-namespace.yaml
+kubectl apply -f 02-backend-pvc.yaml
+kubectl apply -f 03-backend-secret.yaml
+kubectl apply -f 04-backend-deployment.yaml
+kubectl apply -f 05-backend-service.yaml
+kubectl apply -f 06-frontend-deployment.yaml
+kubectl apply -f 07-frontend-service.yaml
+kubectl apply -f 08-ingress.yaml
+
+Verify:
+
+kubectl get pods -n wms
+kubectl get svc -n wms
+kubectl get ingress -n wms
+
+
+
+
+# List certificate:
+
+aws acm list-certificates --region us-east-1
+
+Verify:
+
+Status must be ISSUED
+
+# 7 Configure Cloudflare DNS
+
+Create CNAME records:
+
+Name	Target
+app	ALB DNS
+grafana	ALB DNS
+prometheus	ALB DNS
+
+Important:
+
+Proxy Mode must be DNS Only
+
+Verify:
+
+dig app.datanetwork.online
+8 Verify HTTPS
+curl -v https://app.datanetwork.online
+
+Expected:
+
+HTTP 200
+
+SSL success
+
+# 9 Install Monitoring
+
+Create namespace:
 
 kubectl create namespace monitoring
 
+Install monitoring stack:
+
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-helm repo update
+helm install monitoring prometheus-community/kube-prometheus-stack \
+ --namespace monitoring
 
-helm install prometheus-stack prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --set grafana.adminPassword=admin123 \
-  --set kubeDns.enabled=false \
-  --set coreDns.enabled=false \
-  --set kubeControllerManager.enabled=false \
-  --set kubeScheduler.enabled=false \
-  --set kubeEtcd.enabled=false \
-  --set kubeProxy.enabled=false
+Get Grafana password:
 
-# Verification
-kubectl get pods -n monitoring
+kubectl get secret monitoring-grafana -n monitoring \
+ -o jsonpath="{.data.admin-password}" | base64 -d
 
-# What’s Monitored
+# Apply ingress:
 
-Node and cluster health
+kubectl apply -f monitoring-ingress.yaml
 
-Pod CPU & memory usage
+Access:
 
-Application-level metrics
+https://grafana.datanetwork.online
 
-Custom Grafana dashboards
+https://prometheus.datanetwork.online
+
+# 10 Production Verification Checklist
+Cluster
+
+Nodes Ready
+
+EBS CSI installed
+
+OIDC Enabled
+
+Application
+
+Pods Running
+
+Services Created
+
+PVC Bound
+
+Ingress Created
+
+Load Balancer
+
+ALB created
+
+Listener 443 active
+
+Certificate attached
+
+DNS
+
+Domain resolving
+
+HTTPS working
+
+Monitoring
+
+Prometheus running
+
+Grafana accessible
+
+Metrics visible
+
