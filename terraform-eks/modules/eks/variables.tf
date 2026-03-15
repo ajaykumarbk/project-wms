@@ -1,49 +1,31 @@
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable "environment" {
   description = "Environment name"
   type        = string
-  default     = "dev"
 }
 
 variable "cluster_name" {
-  description = "Base name for EKS cluster"
+  description = "EKS cluster name"
   type        = string
-  default     = "lab-cluster"
 }
 
 variable "cluster_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.29"
 }
 
-variable "vpc_cidr" {
-  description = "VPC CIDR block"
+variable "vpc_id" {
+  description = "VPC ID"
   type        = string
-  default     = "10.0.0.0/16"
 }
 
-variable "public_subnet_cidrs" {
-  description = "Public subnet CIDR blocks"
+variable "subnet_ids" {
+  description = "Subnet IDs for EKS cluster"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
-variable "private_subnet_cidrs" {
-  description = "Private subnet CIDR blocks"
+variable "private_subnet_ids" {
+  description = "Private subnet IDs for node groups"
   type        = list(string)
-  default     = ["10.0.10.0/24", "10.0.11.0/24"]
-}
-
-variable "single_nat_gateway" {
-  description = "Use single NAT gateway"
-  type        = bool
-  default     = true
 }
 
 variable "endpoint_private_access" {
@@ -61,7 +43,7 @@ variable "endpoint_public_access" {
 variable "cluster_log_types" {
   description = "List of log types to enable"
   type        = list(string)
-  default     = ["api", "audit", "authenticator"]
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
 
 variable "node_instance_types" {
@@ -73,25 +55,28 @@ variable "node_instance_types" {
 variable "node_desired_size" {
   description = "Desired number of nodes"
   type        = number
-  default     = 2
 }
 
 variable "node_min_size" {
   description = "Minimum number of nodes"
   type        = number
-  default     = 1
 }
 
 variable "node_max_size" {
   description = "Maximum number of nodes"
   type        = number
-  default     = 3
 }
 
 variable "ssh_key_name" {
   description = "SSH key name for nodes"
   type        = string
   default     = null
+}
+
+variable "thumbprint_list" {
+  description = "Thumbprint list for OIDC provider"
+  type        = list(string)
+  default     = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
 }
 
 # Add-on versions
